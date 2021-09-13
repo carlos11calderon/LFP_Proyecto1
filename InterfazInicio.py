@@ -31,7 +31,7 @@ class Ui_Bixelart(object):
         self.buttonCargar = QtWidgets.QPushButton(self.tab)
         self.buttonCargar.setGeometry(QtCore.QRect(20,300,100,35))
         self.buttonCargar.setObjectName("CargarPXLA")
-        self.buttonCargar.clicked.connect(self.FuncionarBoton)
+        self.buttonCargar.clicked.connect(gestor.CargarArchivo)
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
         self.tabWidget.addTab(self.tab_2, "")
@@ -81,5 +81,5 @@ class Ui_Bixelart(object):
     
     def FuncionarBoton(self):
     ##Añadimos la funcion del boton
-        self.buttonCargar.clicked.connect(gestor.CargarArchivo())
-        print("sigue aca")
+     #   self.buttonCargar.clicked.connect(gestor.CargarArchivo)
+      print("sigue aca")
