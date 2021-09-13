@@ -5,10 +5,10 @@ from tkinter import filedialog, Tk
 from tkinter.filedialog import askopenfilename
 from tkinter import * 
 
+
 global texto
-
-
 class Gestor:
+    
     def __init__(self):
         self.Imagen=[]
         self.celda=[]
@@ -30,8 +30,7 @@ class Gestor:
             print(texto)
             archivo.close()
             print("Lectura Exitosa")
-            self.Analizar()
-            self.ImprimirTitulos()
+            
 
     def isLetra(self,caracter):
         if((ord(caracter) >= 65 and ord(caracter) <= 90) or (ord(caracter) >= 97 and ord(caracter) <= 122) or ord(caracter) == 164 or ord(caracter) == 165):
@@ -293,18 +292,6 @@ class Gestor:
                     pass
             elif (estado == 23):
                 print('Se ejecuto todo el archivo')
-                        
-    def ImprimirTitulos(self):
-        print("Imagen 1: "+self.Imagen[0].Titulo)
-        print("Imagen 2: "+self.Imagen[1].Titulo)
-                
-                           
-                
-
-
-
-
-
-
-
-                
+        
+  
+        
