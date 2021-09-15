@@ -11,7 +11,7 @@ class Gestor:
     
     def __init__(self):
         self.Imagen=[]
-        self.celda=[]
+        
         self.Filtros=[]
 
     def CargarArchivo(self): 
@@ -46,6 +46,7 @@ class Gestor:
 
     def Analizar(self):
         global texto
+        tempCelda=[]
         titulo = ""
         ancho = '' 
         alto = ''
@@ -57,13 +58,14 @@ class Gestor:
         color= ''
         estado = 0 
         lexema = ""
-
+        
         for x in texto:
             if (estado==0):
                 if (self.isLetra(x)==True):
                     lexema += x
                     estado = 1
             elif (estado==1):
+               
                 if (self.isLetra(x)==True):
                     lexema += x
                 elif (x == '='):
@@ -192,8 +194,10 @@ class Gestor:
                     lexema += x
                 elif (x==','):
                     ## se debe enviar el tercer dato/parametro de la celda
-                    valorB = lexema
-                    bool(valorB)
+                    if lexema == 'TRUE':
+                        valorB=True
+                    else: 
+                        valorB=False
                     ##se reinicia el lexema
                     lexema = ""
                     estado = 13
@@ -216,7 +220,7 @@ class Gestor:
                     pass
                 else: 
                     print("Error Lexico, se detecto " + x + " en S0 F,C")
-            elif (estado==15):
+            elif (estado == 15):
                 if (self.isLetra(x)==True):
                     lexema += x    
                 elif(self.isNumero(x)==True):
@@ -225,17 +229,18 @@ class Gestor:
                     ## se debe enviar el ultimo dato/parametro de la celda
                     color = lexema
                     ##se reinicia el lexema
-                    if valorB != True:
-                        valorB = False
-                    self.celda.append(Celda(poX,poY,valorB,color))
+                    tempCelda.append(Celda(poX,poY,valorB,color))
                     lexema = ""
                     estado = 16
                 else: 
                     print("Error Lexico, se detecto " + x + " en S0 F,C")
-            elif(estado == 16):
+            elif (estado == 16):
                 if (x == ','):
+                    
                     estado = 6 
                 elif(x=='}'):
+                    
+                    
                     estado = 17
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
                     pass
@@ -265,11 +270,13 @@ class Gestor:
                     pass
             elif (estado == 20):
                 if(x=='@'):
+                    
                     lexema+=x
                     estado = 22
                 elif (x=='%'):
-                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),self.celda,self.Filtros))
-                    estado == 23
+                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,self.Filtros))
+                    
+                    estado = 23
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
                     pass
             elif(estado==21):
@@ -285,13 +292,81 @@ class Gestor:
                     lexema+=x
                 elif(self.isLetra(x)==True):
                     lexema=''
-                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),self.celda,self.Filtros))
+                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,self.Filtros))
+                    tempCelda=[]
                     estado = 1
                     lexema +=x
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
                     pass
-            elif (estado == 23):
-                print('Se ejecuto todo el archivo')
-        
+        if (estado==23):
+            self.GenerarArchivosPixeles()
+            print('Se ejecuto todo el archivo')
+
+    def GenerarArchivosPixeles(self):
+        for i in range(0,len(self.Imagen)):    
+            filehtml = open("./Reportes/Reporte"+self.Imagen[i].Titulo+".html","w")
+            fileCss = open("./Reportes/Reporte"+self.Imagen[i].Titulo+".css","w")
+            pixel = ''
+            for c in range(int(self.Imagen[i].Filas)*int(self.Imagen[i].Columnas)): 
+                pixel += '<div class="pixel"></div>\n\n'
+            contenidoHTML=(
+              '<!DOCTYPE html>\n'
+                ' <html>\n' 
+                '<head> \n'
+                '<meta charset="utf-8"> \n'
+                '<link rel="stylesheet" href="Reporte'+self.Imagen[i].Titulo+'.css">\n'
+                '<title>Reporte' +self.Imagen[i].Titulo +'</title>\n'
+                '</head>\n' 
+                '<body>\n'
+                '<div class="canvas">\n'
+                +pixel+
+                '</div>\n''</body>\n''</html>\n'
+            )
+            filehtml.write(str(contenidoHTML))
+            cssPixel =''
+            contador=0
+            
+            for fila in range(0,self.Imagen[i].Filas):
+                for columna in range(0, self.Imagen[i].Columnas):
+                    contador+=1
+                    for celda in self.Imagen[i].Celda:
+                        if(int(celda.x)==fila) and (int(celda.y)==columna):
+                            if (celda.valor==True):
+                                cssPixel+='\n.pixel:nth-child('+str(contador)+'){\n'+'background:'+str(celda.color)+';\n}\n'
+                                
+            #num = int(self.Imagen[i].Celda[n].x)*int(self.Imagen[i].Columnas)+int(self.Imagen[i].Celda[j].y) + 1
+            ##cssPixel += '.pixel:nth-child('+str(conta)+'){\n'+'background:'+str(self.Imagen[i].Celda[n].color)+';\n}\n'
+            print(cssPixel)
+            contenidoCSS=(
+                ##se le agrega estilo al cuerpo del html
+                'body {\n' 
+                'background: #333333;      /* Background color de toda la página */\n'
+                'height: 100vh;\n'
+                'display: flex;            /* Define contenedor flexible */\n'
+                'justify-content: center;  /* Centra horizontalmente el lienzo */\n'
+                'align-items: center;      /* Centra verticalmente el lienzo */\n' 
+                ## cierra el estilo del body
+                '}\n\n'
+                ##se agrega estilo al lienzo (div clase canvas)
+                '.canvas {\n'
+                'width:'+str(self.Imagen[i].Ancho)+'px;   /* Ancho del lienzo, se asocia al ANCHO de la entrada */\n'
+                'height:'+str(self.Imagen[i].Alto)+'px;  /* Alto del lienzo, se asocia al ALTO de la entrada */\n}\n\n'
+                ## CIerra el estilo del lienzo
+                ## abre el estilo de los pixeles
+                '.pixel {\n'
+                ' width:'+str(self.Imagen[i].Ancho/self.Imagen[i].Columnas)+'px;   /* Ancho de cada pixel, se obtiene al operar ANCHO/COLUMNAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */\n'
+                'height:'+str(self.Imagen[i].Alto/self.Imagen[i].Filas)+'px;   /* Alto de cada pixel, se obtiene al operar ALTO/FILAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */\n'
+                'float: left;\n'
+                'box-shadow: 0px 0px 1px #fff; /*Si lo comentan les quita la cuadricula de fondo */\n'
+                '}\n\n'
+                #cierra el estilo de los pixeles
+                +cssPixel
+            )       
+            
+            fileCss.write(str(contenidoCSS))
+            
+            fileCss.close()
+            filehtml.close()
+            cssPixel=pixel=''
   
         

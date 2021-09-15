@@ -5,6 +5,6 @@ class Imagen:
         self.Alto=alto
         self.Filas=fil
         self.Columnas=col 
-        self.Celdas=cel 
+        self.Celda=cel 
         self.Filtros= filtros
         
