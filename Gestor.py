@@ -1,10 +1,11 @@
 from Imagen import Imagen
 from Celda import Celda
-from os import truncate
+from os import name, startfile, truncate
 from tkinter import filedialog, Tk
 from tkinter.filedialog import askopenfilename
 from tkinter import * 
-
+from graphviz import *
+import os
 
 global texto
 class Gestor:
@@ -12,7 +13,6 @@ class Gestor:
     def __init__(self):
         self.Imagen=[]
         
-        self.Filtros=[]
 
     def CargarArchivo(self): 
 
@@ -47,6 +47,7 @@ class Gestor:
     def Analizar(self):
         global texto
         tempCelda=[]
+        tempFiltros=[]
         titulo = ""
         ancho = '' 
         alto = ''
@@ -259,11 +260,11 @@ class Gestor:
                 if(self.isLetra(x)==True):
                     lexema += x
                 elif (x==';'):
-                    self.Filtros.append(lexema)
+                    tempFiltros.append(lexema)
                     estado = 20
                     lexema = ''
                 elif(x==','):
-                    self.Filtros.append(lexema)
+                    tempFiltros.append(lexema)
                     estado = 21
                     lexema = ''
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
@@ -274,7 +275,7 @@ class Gestor:
                     lexema+=x
                     estado = 22
                 elif (x=='%'):
-                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,self.Filtros))
+                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros))
                     
                     estado = 23
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
@@ -292,8 +293,9 @@ class Gestor:
                     lexema+=x
                 elif(self.isLetra(x)==True):
                     lexema=''
-                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,self.Filtros))
+                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros))
                     tempCelda=[]
+                    tempFiltros=[]
                     estado = 1
                     lexema +=x
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
@@ -304,8 +306,8 @@ class Gestor:
 
     def GenerarArchivosPixeles(self):
         for i in range(0,len(self.Imagen)):    
-            filehtml = open("./Reportes/Reporte"+self.Imagen[i].Titulo+".html","w")
-            fileCss = open("./Reportes/Reporte"+self.Imagen[i].Titulo+".css","w")
+            filehtml = open("./Htmls/"+self.Imagen[i].Titulo+".html","w")
+            fileCss = open("./Htmls/css/"+self.Imagen[i].Titulo+".css","w")
             pixel = ''
             for c in range(int(self.Imagen[i].Filas)*int(self.Imagen[i].Columnas)): 
                 pixel += '<div class="pixel"></div>\n\n'
@@ -314,7 +316,7 @@ class Gestor:
                 ' <html>\n' 
                 '<head> \n'
                 '<meta charset="utf-8"> \n'
-                '<link rel="stylesheet" href="Reporte'+self.Imagen[i].Titulo+'.css">\n'
+                '<link rel="stylesheet" href="css/'+self.Imagen[i].Titulo+'.css">\n'
                 '<title>Reporte' +self.Imagen[i].Titulo +'</title>\n'
                 '</head>\n' 
                 '<body>\n'
@@ -325,18 +327,26 @@ class Gestor:
             filehtml.write(str(contenidoHTML))
             cssPixel =''
             contador=0
-            
+            AlmacenarGrafica=''
+            AlmacenarGrafica+='<\n<TABLE cellspacing="0" cellpadding="10">\n'
+            celdaExiste=False
             for fila in range(0,self.Imagen[i].Filas):
+                AlmacenarGrafica+='<TR>'
                 for columna in range(0, self.Imagen[i].Columnas):
                     contador+=1
                     for celda in self.Imagen[i].Celda:
                         if(int(celda.x)==fila) and (int(celda.y)==columna):
+                            celdaExiste=True
                             if (celda.valor==True):
+                                AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
                                 cssPixel+='\n.pixel:nth-child('+str(contador)+'){\n'+'background:'+str(celda.color)+';\n}\n'
-                                
-            #num = int(self.Imagen[i].Celda[n].x)*int(self.Imagen[i].Columnas)+int(self.Imagen[i].Celda[j].y) + 1
-            ##cssPixel += '.pixel:nth-child('+str(conta)+'){\n'+'background:'+str(self.Imagen[i].Celda[n].color)+';\n}\n'
-            print(cssPixel)
+                            else:
+                                AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                    if(celdaExiste==False):
+                        AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                    celdaExiste=False
+                AlmacenarGrafica+='</TR>\n'            
+            AlmacenarGrafica+='</TABLE>>'
             contenidoCSS=(
                 ##se le agrega estilo al cuerpo del html
                 'body {\n' 
@@ -368,5 +378,130 @@ class Gestor:
             fileCss.close()
             filehtml.close()
             cssPixel=pixel=''
-  
+            self.GenerarPNG(self.Imagen[i].Titulo,str(AlmacenarGrafica))
+
+
+        ##Generamos los html de los filtros
+        self.HtmlFiltros()
+        print("Ver filtros")
+
+    def HtmlFiltros(self):
+        for i in range(0,len(self.Imagen)):
+            for j in range(0,len(self.Imagen[i].Filtros)):
+                fileHtml= open("./Htmls/"+self.Imagen[i].Titulo+" "+self.Imagen[i].Filtros[j]+".html","w")
+                fileCss = open("./Htmls/css/"+self.Imagen[i].Titulo+" "+self.Imagen[i].Filtros[j]+".css","w")
+                pixel = ''
+                for c in range(int(self.Imagen[i].Filas)*int(self.Imagen[i].Columnas)): 
+                    pixel += '<div class="pixel"></div>\n\n'
+                contenidoHTML=(
+                '<!DOCTYPE html>\n'
+                ' <html>\n' 
+                '<head> \n'
+                '<meta charset="utf-8"> \n'
+                '<link rel="stylesheet" href="css/'+self.Imagen[i].Titulo+" "+self.Imagen[i].Filtros[j]+'.css">\n'
+                '<title>Reporte' +self.Imagen[i].Titulo +'</title>\n'
+                '</head>\n' 
+                '<body>\n'
+                '<div class="canvas">\n'
+                +pixel+
+                '</div>\n''</body>\n''</html>\n'
+            )
+                fileHtml.write(str(contenidoHTML))
+                cssPixel =''
+                contador=0
+                AlmacenarGrafica=''
+                AlmacenarGrafica+='<\n<TABLE cellspacing="0" cellpadding="10">\n'
+                celdaExiste=False
+                if(self.Imagen[i].Filtros[j]=="MIRRORX"):
+                    for fila in range(0,self.Imagen[i].Filas):
+                        AlmacenarGrafica+='<TR>'
+                        for columna in range((self.Imagen[i].Columnas)-1,-1,-1):
+                            contador+=1
+                            for celda in self.Imagen[i].Celda:
+                                if(int(celda.x)==fila) and (int(celda.y)==columna):
+                                    celdaExiste=True
+                                    if (celda.valor==True):
+                                        AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
+                                        cssPixel+='\n.pixel:nth-child('+str(contador)+'){\n'+'background:'+str(celda.color)+';\n}\n'
+                                    else:
+                                        AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                            if(celdaExiste==False):
+                                AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                            celdaExiste=False
+                        AlmacenarGrafica+='</TR>\n'            
+                    AlmacenarGrafica+='</TABLE>>'    
+
+                elif(self.Imagen[i].Filtros[j]=="MIRRORY"):
+                    for fila in range(self.Imagen[i].Filas-1,-1,-1):
+                        AlmacenarGrafica+='<TR>'
+                        for columna in range(0,self.Imagen[i].Columnas):
+                            contador+=1
+                            for celda in self.Imagen[i].Celda:
+                                if(int(celda.x)==fila) and (int(celda.y)==columna):
+                                    celdaExiste=True
+                                    if (celda.valor==True):
+                                        AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
+                                        cssPixel+='\n.pixel:nth-child('+str(contador)+'){\n'+'background:'+str(celda.color)+';\n}\n'
+                                    else:
+                                        AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                            if(celdaExiste==False):
+                                AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                            celdaExiste=False
+                        AlmacenarGrafica+='</TR>\n'            
+                    AlmacenarGrafica+='</TABLE>>'
+
+                elif(self.Imagen[i].Filtros[j]=="DOUBLEMIRROR"):
+                    for fila in range(self.Imagen[i].Filas-1,-1,-1):
+                        AlmacenarGrafica+='<TR>'
+                        for columna in range(self.Imagen[i].Columnas-1,-1,-1):
+                            contador+=1
+                            for celda in self.Imagen[i].Celda:
+                                if(int(celda.x)==fila) and (int(celda.y)==columna):
+                                    celdaExiste=True
+                                    if (celda.valor==True):
+                                        AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
+                                        cssPixel+='\n.pixel:nth-child('+str(contador)+'){\n'+'background:'+str(celda.color)+';\n}\n'
+                                    else:
+                                        AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                            if(celdaExiste==False):
+                                AlmacenarGrafica+='<TD bgcolor="#ffffff"></TD>\n'
+                            celdaExiste=False
+                        AlmacenarGrafica+='</TR>\n'            
+                    AlmacenarGrafica+='</TABLE>>'
+                contenidoCSS=(
+                ##se le agrega estilo al cuerpo del html
+                'body {\n' 
+                'background: #333333;      /* Background color de toda la página */\n'
+                'height: 100vh;\n'
+                'display: flex;            /* Define contenedor flexible */\n'
+                'justify-content: center;  /* Centra horizontalmente el lienzo */\n'
+                'align-items: center;      /* Centra verticalmente el lienzo */\n' 
+                ## cierra el estilo del body
+                '}\n\n'
+                ##se agrega estilo al lienzo (div clase canvas)
+                '.canvas {\n'
+                'width:'+str(self.Imagen[i].Ancho)+'px;   /* Ancho del lienzo, se asocia al ANCHO de la entrada */\n'
+                'height:'+str(self.Imagen[i].Alto)+'px;  /* Alto del lienzo, se asocia al ALTO de la entrada */\n}\n\n'
+                ## CIerra el estilo del lienzo
+                ## abre el estilo de los pixeles
+                '.pixel {\n'
+                ' width:'+str(self.Imagen[i].Ancho/self.Imagen[i].Columnas)+'px;   /* Ancho de cada pixel, se obtiene al operar ANCHO/COLUMNAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */\n'
+                'height:'+str(self.Imagen[i].Alto/self.Imagen[i].Filas)+'px;   /* Alto de cada pixel, se obtiene al operar ALTO/FILAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */\n'
+                'float: left;\n'
+                'box-shadow: 0px 0px 1px #fff; /*Si lo comentan les quita la cuadricula de fondo */\n'
+                '}\n\n'
+                #cierra el estilo de los pixeles
+                +cssPixel
+                )
+                fileCss.write(str(contenidoCSS))
+            
+                fileCss.close()
+                fileHtml.close()
+                cssPixel=pixel=''
+                self.GenerarPNG(self.Imagen[i].Titulo+""+self.Imagen[i].Filtros[j],str(AlmacenarGrafica))
+   
+    def GenerarPNG(self,titulo,texto):
+        Ima = Digraph(format='png')
+        Ima.node(titulo,label=texto,color='white')
+        Ima.render('Imagenes/'+titulo)
         

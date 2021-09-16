@@ -376,7 +376,7 @@ class InterfazInicio(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         self.lblImagen = QtWidgets.QLabel(self.frame)
-        self.lblImagen.setGeometry(QtCore.QRect(180, 80, 101, 16))
+        self.lblImagen.setGeometry(QtCore.QRect(100, 20, 200, 200))
         self.lblImagen.setObjectName("lblImagen")
         self.groupBox = QtWidgets.QGroupBox(self.Analizar)
         self.groupBox.setGeometry(QtCore.QRect(30, 0, 531, 111))
@@ -532,18 +532,26 @@ class InterfazInicio(object):
         self.groupBox.setObjectName("groupBox")
         self.btnOriginal = QtWidgets.QPushButton(self.groupBox)
         self.btnOriginal.setGeometry(QtCore.QRect(20, 20, 101, 81))
+        self.btnOriginal.setEnabled(True)
+        self.btnOriginal.clicked.connect(self.MostrarImagen)
         self.btnOriginal.setObjectName("Original")
         ## Aqui va la Accion de Original
         self.btnMiX = QtWidgets.QPushButton(self.groupBox)
         self.btnMiX.setGeometry(QtCore.QRect(140, 20, 101, 81))
+        self.btnMiX.setEnabled(False)
+        self.btnMiX.clicked.connect(self.MostrarImagenX)
         self.btnMiX.setObjectName("MirrorX")
         ##Aqui va la Accion MirrorX
         self.btnMiY = QtWidgets.QPushButton(self.groupBox)
         self.btnMiY.setGeometry(QtCore.QRect(260, 20, 101, 81))
+        self.btnMiY.setEnabled(False)
+        self.btnMiY.clicked.connect(self.MostrarImagenY)
         self.btnMiY.setObjectName("MirrorY")
         ##Aqui va la Accion MirrorY
         self.btnDMi = QtWidgets.QPushButton(self.groupBox)
         self.btnDMi.setGeometry(QtCore.QRect(380, 20, 101, 81))
+        self.btnDMi.setEnabled(False)
+        self.btnDMi.clicked.connect(self.MostrarImagenXY)
         self.btnDMi.setObjectName("DoubleMirror")
         ##Aqui va la Accion DoubleMirror
         self.Combo = QtWidgets.QComboBox(self.Analizar)
@@ -556,6 +564,8 @@ class InterfazInicio(object):
         ## Accion de Actualizar Combobox
         self.btnActCombo.clicked.connect(self.AddCombo)
         self.toolBox.addItem(self.Analizar, "")
+        
+
         self.GenerarReportes = QtWidgets.QWidget()
         self.GenerarReportes.setGeometry(QtCore.QRect(0, 0, 611, 360))
         palette = QtGui.QPalette()
@@ -770,7 +780,7 @@ class InterfazInicio(object):
         self.pushButton.setText(_translate("Bixelart", "Cargar Archivo"))
         self.pushButton_2.setText(_translate("Bixelart", "Analizar Archivo"))
         self.toolBox.setItemText(self.toolBox.indexOf(self.Cargar), _translate("Bixelart", "Cargar Archivo"))
-        self.lblImagen.setText(_translate("Bixelart", "Aqui va la imagen"))
+        self.lblImagen.setText(_translate("Bixelart", ""))
         self.groupBox.setTitle(_translate("Bixelart", "Botones"))
         self.btnOriginal.setText(_translate("Bixelart", "Original"))
         self.btnMiX.setText(_translate("Bixelart", "MirrorX"))
@@ -785,5 +795,52 @@ class InterfazInicio(object):
 
 
     def AddCombo(self):
+        if self.Combo.count() < 1:
+            for i in range(len(gestor.Imagen)):
+                self.Combo.addItem(gestor.Imagen[i].Titulo)
+        self.ActualizarBotones(self.Combo.currentText())
+
+
+    def ActualizarBotones(self,TextoActual):
+        self.btnMiX.setEnabled(False)
+        self.btnMiY.setEnabled(False)
+        self.btnDMi.setEnabled(False)
         for i in range(len(gestor.Imagen)):
-            self.Combo.addItem(gestor.Imagen[i].Titulo)
+            if TextoActual == gestor.Imagen[i].Titulo:
+                for j in range(len(gestor.Imagen[i].Filtros)):
+                    if (gestor.Imagen[i].Filtros[j]=="MIRRORX"):
+                        self.btnMiX.setEnabled(True)
+                        
+                    elif(gestor.Imagen[i].Filtros[j]=="MIRRORY"):
+                        self.btnMiY.setEnabled(True)
+                        
+                    elif(gestor.Imagen[i].Filtros[j]=="DOUBLEMIRROR"):
+                        self.btnDMi.setEnabled(True)
+                        
+                    
+                        
+
+
+    def MostrarImagen(self):
+        tituloImagen=self.Combo.currentText()
+        pixmap= QtGui.QPixmap('./Imagenes/'+tituloImagen+'.png').scaled(200,200)
+        self.lblImagen.setPixmap(pixmap)
+        self.lblImagen.resize(200,200)
+
+    def MostrarImagenX(self):
+        tituloImagen=self.Combo.currentText()+'MIRRORX'
+        pixmap= QtGui.QPixmap('./Imagenes/'+tituloImagen+'.png').scaled(200,200)
+        self.lblImagen.setPixmap(pixmap)
+        self.lblImagen.resize(200,200)
+    
+    def MostrarImagenY(self):
+        tituloImagen=self.Combo.currentText()+'MIRRORY'
+        pixmap= QtGui.QPixmap('./Imagenes/'+tituloImagen+'.png').scaled(200,200)
+        self.lblImagen.setPixmap(pixmap)
+        self.lblImagen.resize(200,200)
+    
+    def MostrarImagenXY(self):
+        tituloImagen=self.Combo.currentText()+'DOUBLEMIRROR'
+        pixmap= QtGui.QPixmap('./Imagenes/'+tituloImagen+'.png').scaled(200,200)
+        self.lblImagen.setPixmap(pixmap)
+        self.lblImagen.resize(200,200)

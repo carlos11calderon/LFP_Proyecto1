@@ -4,3 +4,4 @@ class Celda:
         self.y = y
         self.valor = valor
         self.color = color
+        
