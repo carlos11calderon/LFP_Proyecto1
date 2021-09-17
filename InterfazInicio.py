@@ -563,8 +563,14 @@ class InterfazInicio(object):
         self.btnActCombo.setObjectName("ActualizarCombo")
         ## Accion de Actualizar Combobox
         self.btnActCombo.clicked.connect(self.AddCombo)
+            
         self.toolBox.addItem(self.Analizar, "")
-        
+        #boton limpiar combo
+        self.btnLimpiar = QtWidgets.QPushButton(self.Analizar)
+        self.btnLimpiar.setGeometry(QtCore.QRect(483, 145, 85, 20))
+        self.btnLimpiar.setObjectName("LimpiarCombo")
+        ## Accion de Actualizar Combobox
+        self.btnLimpiar.clicked.connect(self.Limpiar)
 
         self.GenerarReportes = QtWidgets.QWidget()
         self.GenerarReportes.setGeometry(QtCore.QRect(0, 0, 611, 360))
@@ -735,6 +741,7 @@ class InterfazInicio(object):
         font.setWeight(75)
         self.pushButton_7.setFont(font)
         self.pushButton_7.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.pushButton_7.clicked.connect(gestor.ReporteToken)
         self.pushButton_7.setObjectName("pushButton_7")
         self.pushButton_8 = QtWidgets.QPushButton(self.GenerarReportes)
         self.pushButton_8.setGeometry(QtCore.QRect(60, 180, 481, 101))
@@ -756,6 +763,7 @@ class InterfazInicio(object):
         font.setWeight(75)
         self.pushButton_8.setFont(font)
         self.pushButton_8.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
+        self.pushButton_8.clicked.connect(gestor.ReporteErrores)
         self.pushButton_8.setObjectName("pushButton_8")
         self.label_2 = QtWidgets.QLabel(self.GenerarReportes)
         self.label_2.setGeometry(QtCore.QRect(20, 20, 581, 20))
@@ -787,19 +795,28 @@ class InterfazInicio(object):
         self.btnMiY.setText(_translate("Bixelart", "MirrorY"))
         self.btnDMi.setText(_translate("Bixelart", "DoubleMirror"))
         self.btnActCombo.setText(_translate("Bixelart", "Actualizar"))
+        self.btnLimpiar.setText(_translate("Bixelart", "Limpiar"))
         self.toolBox.setItemText(self.toolBox.indexOf(self.Analizar), _translate("Bixelart", "Analizar"))
-        self.pushButton_7.setText(_translate("Bixelart", "Reporte 1"))
-        self.pushButton_8.setText(_translate("Bixelart", "Reporte 2"))
+        self.pushButton_7.setText(_translate("Bixelart", "Reporte De Tokens"))
+        self.pushButton_8.setText(_translate("Bixelart", "Reporte De Errores"))
         self.label_2.setText(_translate("Bixelart", "Por Favor presione el boton para Generar el Reporte deseado"))
-        self.toolBox.setItemText(self.toolBox.indexOf(self.GenerarReportes), _translate("Bixelart", "Página"))
+        self.toolBox.setItemText(self.toolBox.indexOf(self.GenerarReportes), _translate("Bixelart", "Reportes"))
 
 
     def AddCombo(self):
+        
         if self.Combo.count() < 1:
             for i in range(len(gestor.Imagen)):
                 self.Combo.addItem(gestor.Imagen[i].Titulo)
         self.ActualizarBotones(self.Combo.currentText())
 
+    def Limpiar(self):
+        self.Combo.clear()
+        self.lblImagen.clear()
+        
+        self.btnMiX.setEnabled(False)
+        self.btnMiY.setEnabled(False)
+        self.btnDMi.setEnabled(False)
 
     def ActualizarBotones(self,TextoActual):
         self.btnMiX.setEnabled(False)
@@ -816,10 +833,6 @@ class InterfazInicio(object):
                         
                     elif(gestor.Imagen[i].Filtros[j]=="DOUBLEMIRROR"):
                         self.btnDMi.setEnabled(True)
-                        
-                    
-                        
-
 
     def MostrarImagen(self):
         tituloImagen=self.Combo.currentText()
@@ -844,3 +857,5 @@ class InterfazInicio(object):
         pixmap= QtGui.QPixmap('./Imagenes/'+tituloImagen+'.png').scaled(200,200)
         self.lblImagen.setPixmap(pixmap)
         self.lblImagen.resize(200,200)
+
+    
