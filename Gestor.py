@@ -358,15 +358,29 @@ class Gestor:
                 if(self.isLetra(x)==True):
                     lexema += x
                 elif (x==';'):
-                    tempFiltros.append(lexema)
-                    col = contadorColumna-len(lexema)
-                    self.Tokens.append(Token('Filtro',lexema,contadorFila,col))
+                    if (lexema=="MIRRORX" or lexema == "MIRRORY" or lexema=='DOUBLEMIRROR'):
+                        tempFiltros.append(lexema)
+                        col = contadorColumna-len(lexema)
+                        self.Tokens.append(Token('Filtro',lexema,contadorFila,col))
+                    else: 
+                        e =('--> Error Lexico, se detecto ' + lexema +" en Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite valores valores alfabeticos, "," y ";" ')
+                        HayError=True
+                        lexema=''
+                        self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
+
                     estado = 20
                     lexema = ''
                 elif(x==','):
-                    tempFiltros.append(lexema)
-                    col = contadorColumna-len(lexema)
-                    self.Tokens.append(Token('Filtro',lexema,contadorFila,col))
+                    if (lexema=="MIRRORX" or lexema == "MIRRORY" or lexema=='DOUBLEMIRROR'):
+                        tempFiltros.append(lexema)
+                        col = contadorColumna-len(lexema)
+                        self.Tokens.append(Token('Filtro',lexema,contadorFila,col))
+                    else: 
+                        e =('--> Error Lexico, se detecto ' + lexema +" en Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite valores valores alfabeticos, "," y ";" ')
+                        HayError=True
+                        lexema=''
+                        self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
+                        
                     estado = 21
                     lexema = ''
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
@@ -394,7 +408,6 @@ class Gestor:
             elif(estado==21):
                 if (self.isLetra(x)==True):
                    lexema +=x
-                   
                    estado=19
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
                     pass
@@ -476,7 +489,7 @@ class Gestor:
                 for columna in range(0, self.Imagen[i].Columnas):
                     contador+=1
                     for celda in self.Imagen[i].Celda:
-                        if(int(celda.x)==fila) and (int(celda.y)==columna):
+                        if(int(celda.x)==columna) and (int(celda.y)==fila):
                             celdaExiste=True
                             if (celda.valor==True):
                                 AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
@@ -559,7 +572,7 @@ class Gestor:
                         for columna in range((self.Imagen[i].Columnas)-1,-1,-1):
                             contador+=1
                             for celda in self.Imagen[i].Celda:
-                                if(int(celda.x)==fila) and (int(celda.y)==columna):
+                                if(int(celda.y)==fila) and (int(celda.x)==columna):
                                     celdaExiste=True
                                     if (celda.valor==True):
                                         AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
@@ -578,7 +591,7 @@ class Gestor:
                         for columna in range(0,self.Imagen[i].Columnas):
                             contador+=1
                             for celda in self.Imagen[i].Celda:
-                                if(int(celda.x)==fila) and (int(celda.y)==columna):
+                                if(int(celda.y)==fila) and (int(celda.x)==columna):
                                     celdaExiste=True
                                     if (celda.valor==True):
                                         AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'
@@ -597,7 +610,7 @@ class Gestor:
                         for columna in range(self.Imagen[i].Columnas-1,-1,-1):
                             contador+=1
                             for celda in self.Imagen[i].Celda:
-                                if(int(celda.x)==fila) and (int(celda.y)==columna):
+                                if(int(celda.y)==fila) and (int(celda.x)==columna):
                                     celdaExiste=True
                                     if (celda.valor==True):
                                         AlmacenarGrafica+='<TD bgcolor="'+celda.color+'"></TD>\n'

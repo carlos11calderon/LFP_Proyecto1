@@ -1,0 +1,20 @@
+body {
+background: #333333;      /* Background color de toda la página */
+height: 100vh;
+display: flex;            /* Define contenedor flexible */
+justify-content: center;  /* Centra horizontalmente el lienzo */
+align-items: center;      /* Centra verticalmente el lienzo */
+}
+
+.canvas {
+width:560px;   /* Ancho del lienzo, se asocia al ANCHO de la entrada */
+height:480px;  /* Alto del lienzo, se asocia al ALTO de la entrada */
+}
+
+.pixel {
+ width:70.0px;   /* Ancho de cada pixel, se obtiene al operar ANCHO/COLUMNAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */
+height:60.0px;   /* Alto de cada pixel, se obtiene al operar ALTO/FILAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */
+float: left;
+box-shadow: 0px 0px 1px #fff; /*Si lo comentan les quita la cuadricula de fondo */
+}
+
