@@ -1,0 +1,77 @@
+digraph {
+	CreeperMIRRORX [label=<
+<TABLE cellspacing="0" cellpadding="10">
+<TR><TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#5AFAA0"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#5AFAA0"></TD>
+</TR>
+<TR><TD bgcolor="#5AFAA0"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#00FF00"></TD>
+</TR>
+<TR><TD bgcolor="#5AFAA0"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#57A039"></TD>
+</TR>
+<TR><TD bgcolor="#57A039"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#57A039"></TD>
+</TR>
+<TR><TD bgcolor="#57A039"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#5AFAA0"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+</TR>
+<TR><TD bgcolor="#5AFAA0"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#57A039"></TD>
+</TR>
+<TR><TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#5AFAA0"></TD>
+</TR>
+<TR><TD bgcolor="#57A039"></TD>
+<TD bgcolor="#00FF00"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#5AFAA0"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#000000"></TD>
+<TD bgcolor="#57A039"></TD>
+<TD bgcolor="#57A039"></TD>
+</TR>
+</TABLE>> color=white]
+}
