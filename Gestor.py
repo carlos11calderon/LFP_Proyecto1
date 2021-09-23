@@ -396,6 +396,7 @@ class Gestor:
                     lexema+=x
                     estado = 22
                 elif (x=='%'):
+                    self.Tokens.append(Token("SimboloFin",x,contadorFila,contadorColumna))
                     self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros))
                     estado = 23
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
@@ -424,6 +425,7 @@ class Gestor:
                 elif(self.isLetra(x)==True):
                     
                     if(HayError==False and lexema=='@@@@'):
+                        self.Tokens.append(Token('Separador',"@@@@",contadorFila,contadorColumna-4))
                         self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros))
                         lexema=''
                         estado=1
