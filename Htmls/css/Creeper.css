@@ -7,88 +7,88 @@ align-items: center;      /* Centra verticalmente el lienzo */
 }
 
 .canvas {
-width:560px;   /* Ancho del lienzo, se asocia al ANCHO de la entrada */
-height:480px;  /* Alto del lienzo, se asocia al ALTO de la entrada */
+width:300px;   /* Ancho del lienzo, se asocia al ANCHO de la entrada */
+height:300px;  /* Alto del lienzo, se asocia al ALTO de la entrada */
 }
 
 .pixel {
- width:70.0px;   /* Ancho de cada pixel, se obtiene al operar ANCHO/COLUMNAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */
-height:60.0px;   /* Alto de cada pixel, se obtiene al operar ALTO/FILAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */
+ width:37.5px;   /* Ancho de cada pixel, se obtiene al operar ANCHO/COLUMNAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */
+height:37.5px;   /* Alto de cada pixel, se obtiene al operar ALTO/FILAS (al hablar de pixeles el resultado de la división debe ser un numero entero) */
 float: left;
 box-shadow: 0px 0px 1px #fff; /*Si lo comentan les quita la cuadricula de fondo */
 }
 
 
 .pixel:nth-child(1){
-background:#5AFAA0;
+background:#92D050;
 }
 
 .pixel:nth-child(2){
-background:#00FF00;
+background:#00B050;
 }
 
 .pixel:nth-child(3){
-background:#57A039;
+background:#92D050;
 }
 
 .pixel:nth-child(4){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(5){
-background:#5AFAA0;
+background:#92D050;
 }
 
 .pixel:nth-child(6){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(7){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(8){
-background:#00FF00;
+background:#92D050;
 }
 
 .pixel:nth-child(9){
-background:#00FF00;
+background:#92D050;
 }
 
 .pixel:nth-child(10){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(11){
-background:#57A039;
+background:#000000;
 }
 
 .pixel:nth-child(12){
-background:#57A039;
+background:#000000;
 }
 
 .pixel:nth-child(13){
-background:#00FF00;
+background:#00B050;
 }
 
 .pixel:nth-child(14){
-background:#57A039;
+background:#92D050;
 }
 
 .pixel:nth-child(15){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(16){
-background:#5AFAA0;
+background:#00B050;
 }
 
 .pixel:nth-child(17){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(18){
-background:#000000;
+background:#92D050;
 }
 
 .pixel:nth-child(19){
@@ -96,11 +96,11 @@ background:#000000;
 }
 
 .pixel:nth-child(20){
-background:#57A039;
+background:#000000;
 }
 
 .pixel:nth-child(21){
-background:#00FF00;
+background:#92D050;
 }
 
 .pixel:nth-child(22){
@@ -112,27 +112,27 @@ background:#000000;
 }
 
 .pixel:nth-child(24){
-background:#5AFAA0;
+background:#000000;
 }
 
 .pixel:nth-child(25){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(26){
-background:#000000;
+background:#00B050;
 }
 
 .pixel:nth-child(27){
-background:#000000;
+background:#00B050;
 }
 
 .pixel:nth-child(28){
-background:#57A039;
+background:#92D050;
 }
 
 .pixel:nth-child(29){
-background:#57A039;
+background:#000000;
 }
 
 .pixel:nth-child(30){
@@ -144,23 +144,19 @@ background:#000000;
 }
 
 .pixel:nth-child(32){
-background:#57A039;
-}
-
-.pixel:nth-child(33){
-background:#57A039;
+background:#92D050;
 }
 
 .pixel:nth-child(34){
-background:#57A039;
+background:#92D050;
 }
 
 .pixel:nth-child(35){
-background:#57A039;
+background:#92D050;
 }
 
 .pixel:nth-child(36){
-background:#000000;
+background:#00B050;
 }
 
 .pixel:nth-child(37){
@@ -168,23 +164,23 @@ background:#000000;
 }
 
 .pixel:nth-child(38){
-background:#5AFAA0;
+background:#000000;
 }
 
 .pixel:nth-child(39){
-background:#00FF00;
+background:#000000;
 }
 
 .pixel:nth-child(40){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(41){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(42){
-background:#00FF00;
+background:#92D050;
 }
 
 .pixel:nth-child(43){
@@ -195,28 +191,24 @@ background:#000000;
 background:#000000;
 }
 
-.pixel:nth-child(45){
-background:#000000;
-}
-
 .pixel:nth-child(46){
 background:#000000;
 }
 
 .pixel:nth-child(47){
-background:#57A039;
+background:#000000;
 }
 
 .pixel:nth-child(48){
-background:#5AFAA0;
+background:#000000;
 }
 
 .pixel:nth-child(49){
-background:#5AFAA0;
+background:#00B050;
 }
 
 .pixel:nth-child(50){
-background:#00FF00;
+background:#00B050;
 }
 
 .pixel:nth-child(51){
@@ -228,49 +220,45 @@ background:#000000;
 }
 
 .pixel:nth-child(53){
-background:#000000;
+background:#00B050;
 }
 
 .pixel:nth-child(54){
-background:#000000;
+background:#00B050;
 }
 
 .pixel:nth-child(55){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(56){
-background:#00FF00;
+background:#92D050;
 }
 
 .pixel:nth-child(57){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(58){
-background:#57A039;
-}
-
-.pixel:nth-child(59){
-background:#000000;
+background:#92D050;
 }
 
 .pixel:nth-child(60){
-background:#57A039;
+background:#00B050;
 }
 
 .pixel:nth-child(61){
-background:#5AFAA0;
+background:#92D050;
 }
 
 .pixel:nth-child(62){
-background:#000000;
+background:#92D050;
 }
 
 .pixel:nth-child(63){
-background:#00FF00;
+background:#00B050;
 }
 
 .pixel:nth-child(64){
-background:#57A039;
+background:#00B050;
 }
