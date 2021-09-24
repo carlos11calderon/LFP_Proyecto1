@@ -18,39 +18,47 @@ class Gestor:
         self.Tokens=[]
         self.Errores=[]
 
-    def CargarArchivo(self): 
-        self.Imagen.clear()
-        self.Tokens.clear()
-        self.Errores.clear()
+    def CargarArchivo(self): ##Inicio del metodo
+        self.Imagen.clear()## al cargar un nuevo archivo se borran las imagenes actuales
+        self.Tokens.clear()## al cargar un nuevo archivo se borran los tokens actuales
+        self.Errores.clear()## al cargar un nuevo archivo se borran los erroes actuales
         global texto 
+        ##importamos la opciones para la ventana emergente
         Tk().withdraw()
-        archivo = filedialog.askopenfile(initialdir="./Archivos Prueba", title="Seleccione un archivo",filetypes=(("Archivos pxla",".pxla"),("ALL files",".txt")))
+        archivo = filedialog.askopenfile(initialdir="./Archivos Prueba", 
+        title="Seleccione un archivo",filetypes=(("Archivos pxla",".pxla"),
+        ("ALL files",".txt")))
         if archivo is None:
             print('No se selecciono ni un archivo\n')
             return None
         else:
+            ##abrimos el archivo y lo leemos
             texto = archivo.read()
             print(texto)
             print('\n\n')
+            ##concatenamos el simbolo terminal
             texto+='%'
             print(texto)
-            archivo.close()
+            archivo.close()##Cerramos el archivo
             print("Lectura Exitosa")
 
-    def isLetra(self,caracter):
-        if((ord(caracter) >= 65 and ord(caracter) <= 90) or (ord(caracter) >= 97 and ord(caracter) <= 122) or ord(caracter) == 164 or ord(caracter) == 165):
+    def isLetra(self,caracter):##metodo que retorna si es una letra alfabetica
+        if((ord(caracter) >= 65 and ord(caracter) <= 90) 
+        or (ord(caracter) >= 97 and ord(caracter) <= 122) 
+        or ord(caracter) == 164 or ord(caracter) == 165):
             return True
         else:
             return False
     
-    def isNumero(self,caracter):
+    def isNumero(self,caracter):##metodo que retorna si es un digito
         if ((ord(caracter) >= 48 and ord(caracter) <= 57)):
             return True
         else:
             return False
 
-    def Analizar(self):
+    def Analizar(self):##metodo del automata finito que analiza
         global texto
+        ##variables y tokens iniciales
         HayError = False
         tempCelda=[]
         tempFiltros=[]
@@ -67,28 +75,31 @@ class Gestor:
         lexema = ""
         contadorColumna=0
         contadorFila=1
-        for x in texto:
-            if(ord(x)==10):
+        for x in texto: # Inicia la lectura del archivo caracter*caracter
+            if(ord(x)==10):## decision si hay un salto de linea se reinicia contadores
                 contadorFila+=1
                 contadorColumna=0
             contadorColumna+=1
             
-            if (estado==0):
-                if (self.isLetra(x)==True):
+            if (estado==0):## Inicia el automata
+                if (self.isLetra(x)==True): ##Verifica si hay letra
                     lexema += x
-                    estado = 1
-            elif (estado==1):
+                    estado = 1## Cambia de estado
+            elif (estado==1):##Estado Nuevo
                 
-                if (self.isLetra(x)==True):
+                if (self.isLetra(x)==True):#Verifica si hay letra
                     lexema += x
                     HayError=False
-                elif (x == '='):
-                    if ((lexema == "TITULO") or (lexema == "ANCHO") or (lexema == "ALTO") or (lexema == "FILAS") or (lexema == "COLUMNAS") or (lexema == "CELDAS") or (lexema == "FILTROS")):
-                        estado = 2          
-                    else: 
+                elif (x == '='): # Verifica si es un signo "="
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
+                    if ((lexema == "TITULO") or (lexema == "ANCHO") or (lexema == "ALTO") or (lexema == "FILAS") or (lexema == "COLUMNAS") or (lexema == "CELDAS") or (lexema == "FILTROS")):##Verifica si es de los tokens permitidos  
+                        self.Tokens.append(Token('Reservada',lexema,contadorFila,contadorColumna-len(lexema)))
+                        estado = 2 ##Si es true, cambia de estado          
+                    else: ## Si no
                         e =('--> Error Lexico, se detecto: ' + lexema + ' en ''Fila: '+str(contadorFila)+' Columna: '+str(contadorColumna)+' favor de revisar')
                         HayError=True
                         lexema=''
+                        ##Envia el error de el token no existente
                         self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
             elif (estado == 2 ):
                 if (x=='"'):
@@ -112,6 +123,7 @@ class Gestor:
                     lexema += x
                     estado = 5
                 elif (x=='{'):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     lexema = ""
                     estado = 6
                 elif (self.isLetra(x)==True):
@@ -135,8 +147,9 @@ class Gestor:
                 elif(x=='"'):
                     titulo= lexema
                     col = contadorColumna-len(titulo)
-                    self.Tokens.append(Token("Titulo",titulo,contadorFila,col))
+                    self.Tokens.append(Token('Cadena', titulo,contadorFila,contadorColumna-len(titulo)))
                 elif (x == ';'):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     lexema=""
                     estado = 4
                 ## se ignora los espacios en blanco entre la comilla y el punto y coma
@@ -155,22 +168,19 @@ class Gestor:
                 if (self.isNumero(x)==True):
                     lexema +=x 
                 elif (x == ';'):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     if(atributo=="Ancho"):
                        ancho=lexema
                        col = contadorColumna-len(ancho)
-                       self.Tokens.append(Token("Ancho",ancho,contadorFila,col))
                     elif(atributo=="Alto"):
                         alto=lexema
                         col = contadorColumna-len(alto)
-                        self.Tokens.append(Token('Alto',alto,contadorFila,col))
                     elif(atributo=="Filas"):
                         fila=lexema
                         col = contadorColumna-len(fila)
-                        self.Tokens.append(Token('Filas',fila,contadorFila,col))
                     elif(atributo=="Columnas"):
                         columna=lexema
                         col = contadorColumna-len(columna)
-                        self.Tokens.append(Token('Columnas',columna,contadorFila,col))
                     else:
                         e =('--> Error Lexico, se detecto ' + x +" en "+"Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite valores ";" y numericos  ')    
                         HayError=True
@@ -207,8 +217,8 @@ class Gestor:
                     ## se debe enviar el primer dato/parametro de la celda
                     poX=lexema
                     col = contadorColumna-len(poX) 
-                    self.Tokens.append(Token('X',poX,contadorFila,col))
-                    ##se reinicia el lexema
+                    self.Tokens.append(Token('Reservada',poX,contadorFila,col))
+                    ##se reinicia el lexema 
                     lexema = ""
                     estado = 9
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
@@ -235,7 +245,7 @@ class Gestor:
                      ## se debe enviar el segundo dato/parametro de la celda
                     poY= lexema
                     col = contadorColumna-len(poY)
-                    self.Tokens.append(Token('Y',poY,contadorFila,col))
+                    self.Tokens.append(Token('Reservada','Y',contadorFila,col))
                     ##se reinicia el lexema
                     lexema = ""
                     estado = 11
@@ -313,10 +323,16 @@ class Gestor:
                 elif(self.isNumero(x)==True):
                     lexema += x
                 elif (x == ']'):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     ## se debe enviar el ultimo dato/parametro de la celda
                     color = lexema
-                    col = contadorColumna-len(color)
-                    self.Tokens.append(Token('Color',color,contadorFila,col))
+                    if(len(color)==7):
+                        col = contadorColumna-len(color)
+                        self.Tokens.append(Token('Color',color,contadorFila,col))
+                    else:
+                        e =('--> Error Lexico, se detecto ' + color +" en "+"Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite Colores Hexadecimales, falta '+str(7-len(color))+' valores numericos o alfabeticos ')
+                        HayError=True
+                        self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
                     ##se reinicia el lexema
                     tempCelda.append(Celda(poX,poY,valorB,color))
                     lexema = ""
@@ -328,6 +344,7 @@ class Gestor:
                     self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
             elif (estado == 16):
                 if (x == ','):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     estado = 6 
                 elif(x=='}'):
                    estado = 17
@@ -340,6 +357,7 @@ class Gestor:
                     self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
             elif (estado == 17):
                 if(x==';'):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     estado = 18
                 elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
                     pass
@@ -358,6 +376,7 @@ class Gestor:
                 if(self.isLetra(x)==True):
                     lexema += x
                 elif (x==';'):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     if (lexema=="MIRRORX" or lexema == "MIRRORY" or lexema=='DOUBLEMIRROR'):
                         tempFiltros.append(lexema)
                         col = contadorColumna-len(lexema)
@@ -371,10 +390,12 @@ class Gestor:
                     estado = 20
                     lexema = ''
                 elif(x==','):
+                    self.Tokens.append(Token('Simbolo',x,contadorFila,contadorColumna))
                     if (lexema=="MIRRORX" or lexema == "MIRRORY" or lexema=='DOUBLEMIRROR'):
                         tempFiltros.append(lexema)
                         col = contadorColumna-len(lexema)
-                        self.Tokens.append(Token('Filtro',lexema,contadorFila,col))
+                        self.Tokens.append(Token('Reservada','Filtro',contadorFila,col))
+                        self.Tokens.append(Token('Reservada',lexema,contadorFila,contadorColumna))
                     else: 
                         e =('--> Error Lexico, se detecto ' + lexema +" en Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite valores valores alfabeticos, "," y ";" ')
                         HayError=True
@@ -390,21 +411,24 @@ class Gestor:
                     HayError=True
                     lexema=''
                     self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
-            elif (estado == 20):
-                if(x=='@'):
-                    contadorArroba=1
-                    lexema+=x
-                    estado = 22
-                elif (x=='%'):
-                    self.Tokens.append(Token("SimboloFin",x,contadorFila,contadorColumna))
-                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros))
-                    estado = 23
-                elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: 
-                    pass
+            elif (estado == 20): ##hay mas imagenes o fin
+                if(x=='@'): ## si es un @  
+                    contadorArroba=1 # Cuenta el numero de arrobas e incrementa
+                    lexema+=x #agrega al lexema
+                    estado = 22 ##Cambia estado
+                elif (x=='%'):## si es un %
+                    #lo agrega al simbolo de tokens
+                    self.Tokens.append(Token("Simbolo",x,contadorFila,contadorColumna))
+                    #agrega la imagen  
+                    self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros)) 
+                    estado = 23# cambia estado
+                elif ord(x) == 32 or ord(x) == 10 or ord(x) == 9: #si es espacio tab o salto 
+                    pass # lo ignora
                 else:
                     e =('--> Error Lexico, se detecto ' + x +" en "+"Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite valores valores "@" y "%" ')
-                    HayError=True
+                    HayError=True ##establece que hay error en la imagen
                     lexema=''
+                    ## envia el error
                     self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
             elif(estado==21):
                 if (self.isLetra(x)==True):
@@ -454,20 +478,22 @@ class Gestor:
                     HayError=True
                     lexema=''
                     self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
-        if (estado==23):
-            if HayError==False:
-                self.GenerarArchivosPixeles()
-            else:
+        if (estado==23):## estado terminal
+            if HayError==False:# si no hay error
+                self.GenerarArchivosPixeles() # genera los archivos html 
+            else:# si hay error imprime mensaje en consola
                  print('La imagen final no se genero')
         
-    def GenerarArchivosPixeles(self):
-        for i in range(0,len(self.Imagen)):    
-            filehtml = open("./Htmls/"+self.Imagen[i].Titulo+".html","w")
-            fileCss = open("./Htmls/css/"+self.Imagen[i].Titulo+".css","w")
-            pixel = ''
+    def GenerarArchivosPixeles(self):##Genera los html y manda funcion para imagenes
+        for i in range(0,len(self.Imagen)):## recorre lista imagenes    
+            filehtml = open("./Htmls/"+self.Imagen[i].Titulo+".html","w")## abre html
+            fileCss = open("./Htmls/css/"+self.Imagen[i].Titulo+".css","w")#abre css
+            pixel = ''# variable
+            #Recorre el numero de pixeles a crear 
             for c in range(int(self.Imagen[i].Filas)*int(self.Imagen[i].Columnas)): 
-                pixel += '<div class="pixel"></div>\n\n'
-            contenidoHTML=(
+                #concatena los pixeles
+                pixel += '<div class="pixel"></div>\n\n' 
+            contenidoHTML=(## cuerpo del html
               '<!DOCTYPE html>\n'
                 ' <html>\n' 
                 '<head> \n'
@@ -480,12 +506,14 @@ class Gestor:
                 +pixel+
                 '</div>\n''</body>\n''</html>\n'
             )
-            filehtml.write(str(contenidoHTML))
+            filehtml.write(str(contenidoHTML))# escribe el archivo html
             cssPixel =''
             contador=0
+            #mismo proceso para el css
             AlmacenarGrafica=''
             AlmacenarGrafica+='<\n<TABLE cellspacing="0" cellpadding="10">\n'
             celdaExiste=False
+            ##Genera la imagen 
             for fila in range(0,self.Imagen[i].Filas):
                 AlmacenarGrafica+='<TR>'
                 for columna in range(0, self.Imagen[i].Columnas):
@@ -529,11 +557,12 @@ class Gestor:
                 +cssPixel
             )       
             
-            fileCss.write(str(contenidoCSS))
-            
+            fileCss.write(str(contenidoCSS))##escribe css
+            ## cierra archivos
             fileCss.close()
             filehtml.close()
             cssPixel=pixel=''
+            #genera las imagenes en Graphviz
             self.GenerarPNG(self.Imagen[i].Titulo,str(AlmacenarGrafica))
 
 

@@ -161,6 +161,7 @@ class InterfazInicio(object):
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0, 128))
         brush.setStyle(QtCore.Qt.SolidPattern)
         palette.setBrush(QtGui.QPalette.Disabled, QtGui.QPalette.PlaceholderText, brush)
+        #Creacion de Labels
         self.Cargar.setPalette(palette)
         self.Cargar.setObjectName("Cargar")
         self.label = QtWidgets.QLabel(self.Cargar)
@@ -173,6 +174,7 @@ class InterfazInicio(object):
         self.label.setFont(font)
         self.label.setWordWrap(False)
         self.label.setObjectName("label")
+        ##Creacion de botones
         self.pushButton = QtWidgets.QPushButton(self.Cargar)
         self.pushButton.setGeometry(QtCore.QRect(60, 40, 481, 101))
         palette = QtGui.QPalette()
