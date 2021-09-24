@@ -277,7 +277,7 @@ class Gestor:
                     if lexema == 'TRUE':
                         valorB=True
                         col = contadorColumna-4
-                        self.Tokens.append(Token('Reser','TRUE',contadorFila,col))
+                        self.Tokens.append(Token('Reservada','TRUE',contadorFila,col))
                     else: 
                         valorB=False
                         col = contadorColumna-5
@@ -386,7 +386,6 @@ class Gestor:
                         HayError=True
                         lexema=''
                         self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
-
                     estado = 20
                     lexema = ''
                 elif(x==','):
@@ -446,8 +445,7 @@ class Gestor:
                 if(x=='@' and contadorArroba<4):
                     contadorArroba+=1
                     lexema+=x
-                elif(self.isLetra(x)==True):
-                    
+                elif(self.isLetra(x)==True):                    
                     if(HayError==False and lexema=='@@@@'):
                         self.Tokens.append(Token('Separador',"@@@@",contadorFila,contadorColumna-4))
                         self.Imagen.append(Imagen(titulo,int(ancho),int(alto),int(fila), int(columna),tempCelda,tempFiltros))
@@ -466,8 +464,7 @@ class Gestor:
                     pass
                 elif (x=='@' and contadorArroba>=4):
                     e =('--> Error Lexico, se detecto ' + x +" en "+" Fila: "+str(contadorFila)+" Columna: "+str(contadorColumna)+' Solo se permite 4 valores de "@" ')
-                    HayError=True
-                    
+                    HayError=True                    
                     self.Errores.append(Errores(str(contadorFila), str(contadorColumna), e))
                 elif(self.isLetra(x)==True and contadorArroba>=4):
                     lexema=''
@@ -564,8 +561,6 @@ class Gestor:
             cssPixel=pixel=''
             #genera las imagenes en Graphviz
             self.GenerarPNG(self.Imagen[i].Titulo,str(AlmacenarGrafica))
-
-
         ##Generamos los html de los filtros
         self.HtmlFiltros()
         print("Ver filtros")
@@ -615,7 +610,6 @@ class Gestor:
                             celdaExiste=False
                         AlmacenarGrafica+='</TR>\n'            
                     AlmacenarGrafica+='</TABLE>>'    
-
                 elif(self.Imagen[i].Filtros[j]=="MIRRORY"):
                     for fila in range(self.Imagen[i].Filas-1,-1,-1):
                         AlmacenarGrafica+='<TR>'
@@ -700,7 +694,6 @@ class Gestor:
             contenidoTabla+='<td>'+self.Tokens[i].lexema+'</td>\n'
             contenidoTabla+='<td>'+str(self.Tokens[i].Fila)+'</td>\n'
             contenidoTabla+='<td>'+str(self.Tokens[i].Columna)+'</td>\n</tr>'
-
         contenidoHTML=(
               '<!DOCTYPE html>\n'
                 ' <html>\n' 
