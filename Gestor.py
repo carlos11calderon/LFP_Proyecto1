@@ -217,7 +217,7 @@ class Gestor:
                     ## se debe enviar el primer dato/parametro de la celda
                     poX=lexema
                     col = contadorColumna-len(poX) 
-                    self.Tokens.append(Token('Reservada',poX,contadorFila,col))
+                    self.Tokens.append(Token('X',poX,contadorFila,col))
                     ##se reinicia el lexema 
                     lexema = ""
                     estado = 9
@@ -245,7 +245,7 @@ class Gestor:
                      ## se debe enviar el segundo dato/parametro de la celda
                     poY= lexema
                     col = contadorColumna-len(poY)
-                    self.Tokens.append(Token('Reservada','Y',contadorFila,col))
+                    self.Tokens.append(Token('Y',poY,contadorFila,col))
                     ##se reinicia el lexema
                     lexema = ""
                     estado = 11
@@ -277,11 +277,11 @@ class Gestor:
                     if lexema == 'TRUE':
                         valorB=True
                         col = contadorColumna-4
-                        self.Tokens.append(Token('ValorBool','TRUE',contadorFila,col))
+                        self.Tokens.append(Token('Reser','TRUE',contadorFila,col))
                     else: 
                         valorB=False
                         col = contadorColumna-5
-                        self.Tokens.append(Token('ValorBool','FALSE',contadorFila,col))
+                        self.Tokens.append(Token('Reservada','FALSE',contadorFila,col))
                     ##se reinicia el lexema
                     lexema = ""
                     estado = 13
